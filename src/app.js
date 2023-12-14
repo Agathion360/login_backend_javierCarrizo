@@ -1,6 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
+import session from 'express-session'
+import FileStore from 'session-file-store'
+import MongoStore from 'connect-mongo'
+
 import productRouter from './dao/routes/products.routes.js';
 import carts from './dao/routes/carts.routes.js';
 import Carts from './dao/models/carts.models.js';
@@ -12,7 +16,8 @@ import viewRouter from './dao/routes/products.views.routes.js';
 import cartViews from './dao/routes/carts.views.routes.js';
 import chatRouter from './dao/routes/chat.routes.js';
 import ChatMessage from './dao/models/chat.models.js';
-
+import usersRouter from './dao/routes/users.routes.js';
+import sessionRputer from './dao/routes/sessions.routes.js';
 
 const chat_messages = []
 const PORT = 8080;
@@ -22,7 +27,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
+const fileStorage = FileStore(session)
 
+
+app.use(session({
+    // ttl: time to live, tiempo de vida de la sesión en segs
+    // Recordar!!!. habilitar UNO de los dos, NO ambos a la vez
+    // store: new fileStorage({ path: './sessions', ttl: 60, retries: 0 }), // ARCHIVO
+    store: MongoStore.create({ mongoUrl: MONGOOSE, mongoOptions: {}, ttl: 60, clearInterval: 5000 }), // MONGODB
+    secret: 'secretKeyAbc123',
+    resave: false,
+    saveUninitialized: false
+}))
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', `${__dirname}/views`)
@@ -36,6 +52,8 @@ app.use('/', chatRouter)
 
 app.use('/api/carts',carts)
 app.use('/api/products', productRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/sessions', sessionRputer)
 
 
 
