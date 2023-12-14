@@ -1,0 +1,38 @@
+
+
+  {{!-- <div class="container d-flex justify-content-between mt-2">
+    <h3>{{title}}</h3>
+</div>
+
+<div class="container">
+    <div class="row products-container" id="productsContainer"></div>
+</div> --}}
+
+<!-- Agrega la paginación -->
+{{!-- <div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <button id="prevPageBtn" class="btn btn-primary me-2">Página anterior</button>
+        <button id="nextPageBtn" class="btn btn-primary">Página siguiente</button>
+    </div>
+</div> --}}
+<div class="container d-flex justify-content-between mt-2">
+    <h3>{{title}}</h3>
+</div>
+
+<div class="container">
+    <div class="row products-container" id="productsContainer"></div>
+</div>
+
+<!-- Agrega la paginación -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        {{#if totalPages}}
+            {{#if hasPrevPage}}
+                <button id="prevPageBtn" class="btn btn-primary me-2">Página anterior</button>
+            {{/if}}
+            {{#if hasNextPage}}
+                <button id="nextPageBtn" class="btn btn-primary">Página siguiente</button>
+            {{/if}}
+        {{/if}}
+    </div>
+</div>
