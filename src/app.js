@@ -17,7 +17,13 @@ import cartViews from './dao/routes/carts.views.routes.js';
 import chatRouter from './dao/routes/chat.routes.js';
 import ChatMessage from './dao/models/chat.models.js';
 import usersRouter from './dao/routes/users.routes.js';
-import sessionRputer from './dao/routes/sessions.routes.js';
+import ProfileController from './dao/controllers/profile.controller.js';
+import registerRoutes from './dao/routes/register.routes.js';
+import registerViews from './dao/routes/register.views.routes.js';
+import sessionRoutes from './dao/routes/sessions.routes.js';
+
+
+
 
 const chat_messages = []
 const PORT = 8080;
@@ -28,17 +34,37 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
 const fileStorage = FileStore(session)
+const profileController = new ProfileController();
 
 
 app.use(session({
-    // ttl: time to live, tiempo de vida de la sesión en segs
-    // Recordar!!!. habilitar UNO de los dos, NO ambos a la vez
-    // store: new fileStorage({ path: './sessions', ttl: 60, retries: 0 }), // ARCHIVO
+   
     store: MongoStore.create({ mongoUrl: MONGOOSE, mongoOptions: {}, ttl: 60, clearInterval: 5000 }), // MONGODB
     secret: 'secretKeyAbc123',
     resave: false,
     saveUninitialized: false
 }))
+
+
+app.use((req, res, next) => {
+    res.locals.showNavbar = true; 
+    next();
+  });
+  
+  const auth = (req, res, next) => {
+    try {
+      if (req.session.user) {
+        next();
+      } else {
+        res.status(401).send({ status: 'ERR', data: 'Usuario no autenticado' });
+      }
+    } catch (err) {
+      res.status(500).send({ status: 'ERR', data: err.message });
+    }
+  };
+  
+
+
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', `${__dirname}/views`)
@@ -48,15 +74,19 @@ app.set('view engine', 'handlebars')
 app.use('/', viewRouter)
 app.use('/', cartViews)
 app.use('/', chatRouter)
+app.use('/', registerViews)
+app.get('/profile', profileController.showProfile);
+
 
 
 app.use('/api/carts',carts)
 app.use('/api/products', productRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/sessions', sessionRputer)
+app.use('/api/sessions', sessionRoutes);
+app.use('/api/register', registerRoutes); 
+app.get('/profile', auth, profileController.showProfile);
 
-
-
+  
 
 try{
     await mongoose.connect(MONGOOSE)
@@ -108,11 +138,6 @@ try{
         });
         
 
-
-
-
-
-
         socket.on('carts', async () => {
             const carts = await Carts.find();
             socket.emit('carts', carts);
@@ -152,14 +177,13 @@ try{
      console.error("Error al conectar a la base de datos:", error.message)
 }
 
-app.get('*', (req, res) => {
-    res.status(400).send(`<h1 style="color:red">Pagina no encontrada</h1>`)
-});
-
-
 
 
 
 app.get('*', (req, res) => {
     res.status(400).send(`<h1 style="color:red">Pagina no encontrada</h1>`)
 });
+
+
+
+

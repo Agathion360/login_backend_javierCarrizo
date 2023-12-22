@@ -12,16 +12,26 @@ router.get('/products', async (req, res) => {
     const { limit, page, sort } = req.query;
     if (req.session.user) {
         try {
-            const productsData = await controller.getProducts(limit, page, sort);
+            const productsData = await controller.getProducts(limit, page, sort, req.session.user.username, req.session.user.role);
 
+            res.locals.showNavbar = true
             res.render('products', {
                 title: 'Listado de Productos',
                 rutaJs: 'products',
                 products: productsData.products,
-                totalProducts: productsData.total,
-                totalPages: productsData.pages,
-                currentPage: productsData.currentPage
+                totalProducts: productsData.pagination.total,
+                totalPages: productsData.pagination.pages,
+                currentPage: productsData.pagination.currentPage,
+                hasPrevPage: productsData.pagination.hasPrevPage,
+                hasNextPage: productsData.pagination.hasNextPage,
+                prevPage: productsData.pagination.prevPage,
+                nextPage: productsData.pagination.nextPage,
+                email: productsData.email,
+                role: productsData.role,
             });
+            
+
+            
         } catch (err) {
             res.status(500).render('error', {
                 message: 'Error al obtener productos',
@@ -29,12 +39,14 @@ router.get('/products', async (req, res) => {
             });
         }
     } else {
+        res.locals.showNavbar = false
         res.redirect('/login')
     }
 });
 
 router.get('/login', async (req, res) => {
-   
+    res.locals.showNavbar = false
+
     if (req.session.user) {
         res.redirect('/profile')
     } else {

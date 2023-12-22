@@ -9,24 +9,6 @@ const productController = new ProductController();
 
 
 
-// router.get('/', async (req, res) => {
-//     try {
-//         const limit = req.query.limit || 10;
-//         const page = req.query.page || 1;
-//         const sort = req.query.sort || ''; 
-//         const products = await productController.getProducts(limit, page, sort);
-
-//         const status = products && products.docs && products.docs.length > 0 ? 'Success' : 'Error';
-//         const message = status === 'Error' ? 'No se encontraron productos.' : undefined;
-
-//         res.status(status === 'Success' ? 200 : 404).send({ status, data: products, message });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send({ status: 'Error', message: 'Error interno del servidor' });
-//     }
-// });
-
-
 router.get('/', async (req, res) => {
     try {
         const limit = req.query.limit || 10;

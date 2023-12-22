@@ -5,19 +5,6 @@ socket.emit('carts');
 console.log('Conexión con  carts');
 
 
-// socket.on('carts', carts => {
-//     cartsContainer.innerHTML = '';
-//     carts.forEach(cart => {
-//         cartsContainer.innerHTML += `
-//         <tr class="table">
-//         <th scope="row" class="col mx-6 text-center table2">${cart.id}</th>
-//         <td class="mx-6 text-left title-product table2">${cart.products}</td>
-//     </tr>
-//         `;
-//     });
-// });
-
-
 socket.on('carts', carts => {
     cartsContainer.innerHTML = '';
     carts.forEach(cart => {

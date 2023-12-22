@@ -20,66 +20,7 @@ async addProduct(product) {
 }
 
 
-
-// async getProducts(limit, page, sort) {
-//     try {
-//         const options = { 
-//             limit: parseInt(limit, 10),
-//             page: parseInt(page, 10),
-//             lean: true 
-//         };
-
-//         if (sort && (sort.toLowerCase() === 'asc' || sort.toLowerCase() === 'desc')) {
-//             options.sort = { price: sort.toLowerCase() };
-//         }
-
-//         const products = await productsModel.paginate({}, options);
-//         return {
-//             total: products.total,
-//             pages: products.pages,
-//             currentPage: products.page,
-//             products: products.docs
-//         };
-//     } catch (error) {
-//         console.error('Error al obtener productos:', error);
-//         throw new Error('Error al obtener productos');
-//     }
-// }
-
-
-// async getProducts(limit, page, sort) {
-//     try {
-//         const options = { 
-//             limit: parseInt(limit, 10),
-//             page: parseInt(page, 10),
-//             lean: true 
-//         };
-
-//         if (sort && (sort.toLowerCase() === 'asc' || sort.toLowerCase() === 'desc')) {
-//             options.sort = { price: sort.toLowerCase() };
-//         }
-
-//         const products = await productsModel.paginate({}, options);
-
-//         return {
-//             pagination: {
-//                 total: products.totalDocs,
-//                 pages: products.totalPages,
-//                 currentPage: products.page,
-//                 hasNextPage: products.hasNextPage,
-//                 hasPrevPage: products.hasPrevPage,
-//                 nextPage: products.nextPage,
-//                 prevPage: products.prevPage,
-//             },
-//             products: products.docs
-//         };
-//     } catch (error) {
-//         console.error('Error al obtener productos:', error);
-//         throw new Error('Error al obtener productos');
-//     }
-// }
-
-async getProducts(limit, page, sort) {
+async getProducts(limit, page, sort, email,role) {
     try {
         const options = this.buildPaginationOptions(limit, page, sort);
 
@@ -96,12 +37,20 @@ async getProducts(limit, page, sort) {
                 prevPage: products.prevPage,
             },
             products: products.docs,
+            email: email || "",
+            // role: req.session.user.role || "", 
+            role: role || "", 
+
         };
     } catch (error) {
         console.error('Error al obtener productos:', error);
         throw new Error('Error al obtener productos');
     }
 }
+
+
+
+
 
 buildPaginationOptions(limit, page, sort) {
     const options = {

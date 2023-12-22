@@ -25,4 +25,18 @@ export class UserController {
             return err.message
         }
     }
+
+
+    async createUser(req, res) {
+        const { first_name, last_name, email, age, password } = req.body;
+    
+        try {
+        
+          res.status(201).json({ status: 'OK', data: 'Usuario registrado correctamente' });
+        } catch (error) {
+          res.status(500).json({ status: 'ERR', data: error.message });
+        }
+      }
+
+
 }

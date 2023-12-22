@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    console.log('Conexión con Socket.io');
     socket.emit('load', { page: currentPage });
 
     socket.on('products', data => {
@@ -53,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Agrega una lógica para deshabilitar los botones de paginación si no hay páginas anteriores o siguientes
         const prevPageBtn = document.getElementById('prevPageBtn');
         const nextPageBtn = document.getElementById('nextPageBtn');
 
